@@ -26,12 +26,13 @@ sys_exit(void)
 }
 
 int
-sys_wait(int *status)
+sys_wait(void)
 {
-  if(argptr(0,(void*)&status sizeof(status)) < 0){
+  int *status;
+  if(argptr(0,(void*)&status, sizeof(status)) < 0){
 	return -1;
   }
-  return wait();
+  return wait(status);
 }
 
 int
