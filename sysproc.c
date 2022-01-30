@@ -104,8 +104,8 @@ sys_waitpid(void){
   int pid;
   int options;
   int* status;
-  if(argint(0, &pid) < 0){
-    return -1;
+  if(argptr(0,(void*)&status, sizeof(status)) < 0){
+        return -1;
   }
   return waitpid(pid, status, options); 
 }  //lab1 pt3
