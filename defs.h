@@ -120,7 +120,7 @@ void            userinit(void);
 int             wait(int *status); //LAB1
 void            wakeup(void*);
 void            yield(void);
-
+int             waitpid(int, int *, int);   //lab1 pt3
 // swtch.S
 void            swtch(struct context**, struct context*);
 
