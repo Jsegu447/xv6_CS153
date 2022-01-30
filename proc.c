@@ -282,7 +282,7 @@ wait(int *status) //LAB1 WAIT
     // Scan through table looking for exited children.
     havekids = 0;
     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
-      if(p->parent != curproc)
+      if(p->pid != pid)
         continue;
       havekids = 1;
       if(p->state == ZOMBIE){
@@ -316,7 +316,7 @@ wait(int *status) //LAB1 WAIT
 }
 
 int
-waitpid(int pid, int *status, int options)
+waitpid(int pid, int *status, int options)     //lab1 pt3
 {
   struct proc *p;
   int havekids, pid;
