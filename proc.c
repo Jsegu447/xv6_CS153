@@ -319,7 +319,7 @@ int
 waitpid(int pid, int *status, int options)     //lab1 pt3
 {
   struct proc *p;
-  int havekids, pid;
+  int havekids, pid2;
   struct proc *curproc = myproc();
   
   acquire(&ptable.lock);
@@ -343,7 +343,7 @@ waitpid(int pid, int *status, int options)     //lab1 pt3
 	    *status = p->eStatus;
 	  }
 	  release(&ptable.lock);
-	  return pid;
+	  return pid2;
        }
      }
     if(!havekids || curproc->killed){
