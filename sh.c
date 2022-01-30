@@ -166,7 +166,7 @@ main(void)
     }
     if(fork1() == 0)
       runcmd(parsecmd(buf));
-    wait();
+    wait(0);//LAB1 WAIT
   }
   exit(0);//LAB1 SUCCESS
 }
