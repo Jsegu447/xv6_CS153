@@ -230,7 +230,6 @@ exit(int status)//LAB1 eSTATUS
   struct proc *curproc = myproc();
   struct proc *p;
   int fd;
-  curproc->eStatus = status;
 
   if(curproc == initproc)
     panic("init exiting");
@@ -249,7 +248,7 @@ exit(int status)//LAB1 eSTATUS
   curproc->cwd = 0;
 
   acquire(&ptable.lock);
-
+  curproc->eStatus = status;//LAB1 eSTATE
   // Parent might be sleeping in wait().
   wakeup1(curproc->parent);
 
@@ -296,7 +295,7 @@ wait(int *status) //LAB1 WAIT
         p->name[0] = 0;
         p->killed = 0;
         p->state = UNUSED;
-	if(status){
+	if(status != 0){
 	*status = p->eStatus; //LAB1 WAIT
 	}
         release(&ptable.lock);
