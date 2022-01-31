@@ -294,7 +294,7 @@ wait(int *status) //LAB1 WAIT
         p->name[0] = 0;
         p->killed = 0;
         p->state = UNUSED;
-	if(status != 0){
+	if(status){
 	*status = p->eStatus; //LAB1 WAIT
 	}
         release(&ptable.lock);
@@ -337,7 +337,7 @@ waitpid(int pid, int *status, int options)     //lab1 pt3
 	  p->name[0] = 0;
 	  p->killed = 0;
 	  p->state = UNUSED;
-	  if(status != 0){
+	  if(status){
 	    *status = p->eStatus;
 	  }
 	  release(&ptable.lock);
