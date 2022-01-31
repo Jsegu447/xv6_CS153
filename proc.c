@@ -231,7 +231,6 @@ exit(int status)//LAB1 eSTATUS
   struct proc *p;
   int fd;
   curproc->eStatus = status;
-
   if(curproc == initproc)
     panic("init exiting");
 
@@ -249,7 +248,6 @@ exit(int status)//LAB1 eSTATUS
   curproc->cwd = 0;
 
   acquire(&ptable.lock);
-
   // Parent might be sleeping in wait().
   wakeup1(curproc->parent);
 
@@ -329,8 +327,8 @@ waitpid(int pid, int *status, int options)     //lab1 pt3
        if(p->parent != curproc)
 	 continue;
 	havekids = 1;
-	if(p->state == ZOMBIE){
-	  pid = p->pid;
+	if(p->state == ZOMBIE && p->pid == pid){
+	  pid2 = p->pid;
 	  kfree(p->kstack);
 	  p->kstack = 0;
 	  freevm(p->pgdir);
