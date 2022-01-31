@@ -105,7 +105,7 @@ sys_waitpid(void){
   int options = 0;
   int* status;
   argint(0, &pid);
-  if(argptr(1,(void*)&status, sizeof(status)) < 0){
+  if(argptr(1,(void*)&status, sizeof(int)) < 0){
         return -1;
   }
   return waitpid(pid, status, options); 
