@@ -382,20 +382,7 @@ scheduler(void)
 	
 	for(next_p = p + 1; next_p < &ptable.proc[NPROC]; next_p++){
         if(next_p->priority < p->priority && next_p->state == RUNNABLE){
-          p = next_p;
-        }
-      }
-
-      for(next_p = ptable.proc; next_p < &ptable.proc[NPROC]; next_p++){
-        if(next_p->priority > 0){
-          next_p->priority--;
-        }
-      }
-
-      if(p->priority <= 30){
-         p->priority++;
-      }
-
+          p = next_
      
       
 
@@ -600,5 +587,6 @@ procdump(void)
 int setPrior(int prio){ //LAB2
 	 struct proc *p = myproc();
 	 p->priority = prio;
+         sched();
 	 return 0;
 }
