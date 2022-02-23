@@ -198,7 +198,7 @@ fork(void)
   }
   np->sz = curproc->sz;
   np->parent = curproc;
-  np->priority = curproc->priority;//INHERATANCE LAB2
+//  np->priority = curproc->priority;//INHERATANCE LAB2
   *np->tf = *curproc->tf;
 
   // Clear %eax so that fork returns 0 in the child.
@@ -375,33 +375,26 @@ scheduler(void)
 
     // Loop over process table looking for process to run.
     acquire(&ptable.lock);
-    proc* lowest = ptable.proc;//LAB2
+   struct proc* lowest = ptable.proc;//LAB2
     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
       if(p->state != RUNNABLE )
         continue; 
-
-      else{ //if its runnable
-	if(p->priority < lowest->priority){ // if p is lower priority
-		lowest->priority--;
-		lowest = p; // make it new lowest
-		if(p != &ptable.proc[NPROC-1]){ //if we havent finished completely looking
-			continue;
+	
+       else if(p->state == RUNNABLE){
+		if(p->priority <= lowest->priority){
+			if(lowest->priority > 0){
+			//lowest->priority--;
+			}
+			lowest = p;
 		}
 	}
-	else{
-		if(p->priority > 0){ // reduce priority if not smallest
-			p->priority--;
-			continue;
-		}
-	}
-      }
      
       
 
       // Switch to chosen process.  It is the process's job
       // to release ptable.lock and then reacquire it
       // before jumping back to us.
-      lower->priority++;
+      //lowest->priority++;
       c->proc = lowest;  //LAB2
       switchuvm(lowest);
       lowest->state = RUNNING;
@@ -599,6 +592,5 @@ procdump(void)
 int setPrior(int prio){ //LAB2
 	 struct proc *p = myproc();
 	 p->priority = prio;
-	 sched();	
 	 return 0;
 }
