@@ -50,6 +50,7 @@ struct proc {
   struct inode *cwd;           // Current directory
   char name[16];               // Process name (debugging)
   int eStatus;		       // LAB1 eSTATUS
+  int priority;		       // LAB2 PRIORITY
 };
 
 // Process memory is laid out contiguously, low addresses first:

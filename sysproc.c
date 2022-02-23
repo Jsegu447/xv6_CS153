@@ -110,3 +110,12 @@ sys_waitpid(void){
   }
   return waitpid(pid, status, options); 
 }  //lab1 pt3
+
+int //LAB2
+sys_setPrior(void){
+	int prior;
+	if(argint(0,&prior) < 0){
+        return -1;
+	}
+  	return setPrior(prior);
+}

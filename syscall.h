@@ -21,3 +21,4 @@
 #define SYS_mkdir  20
 #define SYS_close  21
 #define SYS_waitpid 22 //LAB1
+#define SYS_setPrior 23 //LAB2
