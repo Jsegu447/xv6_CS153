@@ -375,19 +375,27 @@ scheduler(void)
 
     // Loop over process table looking for process to run.
     acquire(&ptable.lock);
-   struct proc* lowest = ptable.proc;//LAB2
+   struct proc* next_p = 0;
     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
       if(p->state != RUNNABLE )
         continue; 
 	
-       else if(p->state == RUNNABLE){
-		if(p->priority <= lowest->priority){
-			if(lowest->priority > 0){
-			//lowest->priority--;
-			}
-			lowest = p;
-		}
-	}
+	for(next_p = p + 1; next_p < &ptable.proc[NPROC]; next_p++){
+        if(next_p->priority < p->priority && next_p->state == RUNNABLE){
+          p = next_p;
+        }
+      }
+
+      for(next_p = ptable.proc; next_p < &ptable.proc[NPROC]; next_p++){
+        if(next_p->priority > 0){
+          next_p->priority--;
+        }
+      }
+
+      if(p->priority <= 30){
+         p->priority++;
+      }
+
      
       
 
@@ -395,11 +403,11 @@ scheduler(void)
       // to release ptable.lock and then reacquire it
       // before jumping back to us.
       //lowest->priority++;
-      c->proc = lowest;  //LAB2
-      switchuvm(lowest);
-      lowest->state = RUNNING;
+      c->proc = p;  //LAB2
+      switchuvm(p);
+      p->state = RUNNING;
 
-      swtch(&(c->scheduler), lowest->context);
+      swtch(&(c->scheduler), p->context);
       switchkvm();
 
       // Process is done running for now.
