@@ -198,7 +198,7 @@ fork(void)
   }
   np->sz = curproc->sz;
   np->parent = curproc;
-//  np->priority = curproc->priority;//INHERATANCE LAB2
+  //np->priority = curproc->priority;//INHERATANCE LAB2
   *np->tf = *curproc->tf;
 
   // Clear %eax so that fork returns 0 in the child.
@@ -392,12 +392,15 @@ scheduler(void)
 	}
    }
      
-      
+      //cprintf("%d %s %s", p->pid, p->state, p->name);
 
       // Switch to chosen process.  It is the process's job
       // to release ptable.lock and then reacquire it
       // before jumping back to us.
+      if(lowest->priority < 30){
       lowest->priority++;
+	}
+      //cprintf("%d  %s \n", p->pid, p->name);
       c->proc = lowest;  //LAB2
       switchuvm(lowest);
       lowest->state = RUNNING;
@@ -594,6 +597,7 @@ procdump(void)
 int setPrior(int prio){ //LAB2
 	 struct proc *p = myproc();
 	 p->priority = prio;
+	 //cprintf("%d  %s \n", p->pid, p->name);
          yield();
 	 return 0;
 }
