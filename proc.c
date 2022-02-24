@@ -111,7 +111,12 @@ found:
   p->context = (struct context*)sp;
   memset(p->context, 0, sizeof *p->context);
   p->context->eip = (uint)forkret;
+  p->priority = 10; //LAB2 
 
+  p->waitTime = 0;
+  acquire(&tickslock);
+  p->startTime = ticks;
+  release(&tickslock);
   return p;
 }
 
@@ -198,6 +203,7 @@ fork(void)
   }
   np->sz = curproc->sz;
   np->parent = curproc;
+//  np->priority = curproc->priority;//INHERATANCE LAB2
   *np->tf = *curproc->tf;
 
   // Clear %eax so that fork returns 0 in the child.
@@ -259,7 +265,14 @@ exit(int status)//LAB1 eSTATUS
         wakeup1(initproc);
     }
   }
+  
+  acquire(&tickslock);
+  curproc->finishTime = ticks;
+  release(&tickslock);
 
+  cprintf("current process: %d\n", curproc->pid);
+  cprintf("turnaround: %d, waiting: %d", (curproc->finishTime - curproc->startTime),curproc->waitTime);
+  
   // Jump into the scheduler, never to return.
   curproc->state = ZOMBIE;
   sched();
@@ -374,24 +387,39 @@ scheduler(void)
 
     // Loop over process table looking for process to run.
     acquire(&ptable.lock);
+   struct proc* lowest = ptable.proc;
     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
-      if(p->state != RUNNABLE)
-        continue;
+	if(p->state != RUNNABLE)
+		continue;
+	else if(p->state == RUNNABLE){
+		if(p->priority < lowest->priority || lowest->state != RUNNABLE){
+			lowest = p;
+			
+		}	
+	}
+	}	
+    for(p = ptable.proc; p < &ptable.proc[NPROC];p++){
+	if(p != lowest && p->priority > 0){
+		p->priority--;
+		p->waitTime++;
+	}
+   }
+     
 
       // Switch to chosen process.  It is the process's job
       // to release ptable.lock and then reacquire it
       // before jumping back to us.
-      c->proc = p;
-      switchuvm(p);
-      p->state = RUNNING;
+      lowest->priority++;
+      c->proc = lowest;  //LAB2
+      switchuvm(lowest);
+      lowest->state = RUNNING;
 
-      swtch(&(c->scheduler), p->context);
+      swtch(&(c->scheduler), lowest->context);
       switchkvm();
 
       // Process is done running for now.
       // It should have changed its p->state before coming back.
       c->proc = 0;
-    }
     release(&ptable.lock);
 
   }
@@ -573,4 +601,11 @@ procdump(void)
     }
     cprintf("\n");
   }
+}
+
+int setPrior(int prio){ //LAB2
+	 struct proc *p = myproc();
+	 p->priority = prio;
+         yield();
+	 return 0;
 }
