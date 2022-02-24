@@ -51,6 +51,9 @@ struct proc {
   char name[16];               // Process name (debugging)
   int eStatus;		       // LAB1 eSTATUS
   int priority;		       // LAB2 PRIORITY
+  int startTime;               // lab2_task3
+  int finishTime;              // lab2_task3
+  int waitTime;                // lab2_task3
 };
 
 // Process memory is laid out contiguously, low addresses first:

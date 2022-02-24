@@ -112,6 +112,11 @@ found:
   memset(p->context, 0, sizeof *p->context);
   p->context->eip = (uint)forkret;
   p->priority = 10; //LAB2 
+
+  p->waitTime = 0;
+  acquire(&tickslock);
+  p->startTime = ticks;
+  release(&tickslock);
   return p;
 }
 
@@ -260,7 +265,14 @@ exit(int status)//LAB1 eSTATUS
         wakeup1(initproc);
     }
   }
+  
+  acquire(&tickslock);
+  curproc->finishTime = ticks;
+  release(&tickslock);
 
+  cprintf("current process: %d\n", curproc->pid);
+  cprintf("turnaround: %d, waiting: %d", (curproc->finishTime - curproc->startTime),curproc->waitTime);
+  
   // Jump into the scheduler, never to return.
   curproc->state = ZOMBIE;
   sched();
@@ -389,10 +401,10 @@ scheduler(void)
     for(p = ptable.proc; p < &ptable.proc[NPROC];p++){
 	if(p != lowest && p->priority > 0){
 		p->priority--;
+		p->waitTime++;
 	}
    }
      
-      
 
       // Switch to chosen process.  It is the process's job
       // to release ptable.lock and then reacquire it
