@@ -272,7 +272,7 @@ exit(int status)//LAB1 eSTATUS
 
   cprintf("current process: %d\n", curproc->pid);
   cprintf("turnaround: %d, waiting: %d", (curproc->finishTime - curproc->startTime),curproc->waitTime);
-  
+  cprintf("Ending Priority: %d\n", curproc->priority); 
   // Jump into the scheduler, never to return.
   curproc->state = ZOMBIE;
   sched();
@@ -401,7 +401,7 @@ scheduler(void)
     for(p = ptable.proc; p < &ptable.proc[NPROC];p++){
 	if(p != lowest && p->priority > 0){
 		p->priority--;
-		p->waitTime++;
+truct proc* lowest = ptable.proc;	p->waitTime++;
 	}
    }
      
@@ -409,11 +409,13 @@ scheduler(void)
       // Switch to chosen process.  It is the process's job
       // to release ptable.lock and then reacquire it
       // before jumping back to us.
+      if(lowest->priority < 31){
       lowest->priority++;
+	}
       c->proc = lowest;  //LAB2
       switchuvm(lowest);
       lowest->state = RUNNING;
-
+    //  cprintf("Ending Priority: %d\n", lowest->priority);
       swtch(&(c->scheduler), lowest->context);
       switchkvm();
 
@@ -608,4 +610,9 @@ int setPrior(int prio){ //LAB2
 	 p->priority = prio;
          yield();
 	 return 0;
+}
+
+int getPrior(void){
+	struct proc *p = myproc();
+	return p->priority;
 }

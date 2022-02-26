@@ -119,3 +119,8 @@ sys_setPrior(void){
 	}
   	return setPrior(prior);
 }
+
+int
+sys_getPrior(void){
+	return getPrior();
+}
